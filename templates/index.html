@@ -4,142 +4,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PneumoDetect-AI | Chest X-ray Analysis</title>
+    <meta name="theme-color" content="#08080e">
+    <title>PneumoDetect AI | Intelligent Chest X-ray Analysis</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <header class="navbar">
-        <a class="brand" href="/">
-            <span class="brand-icon">✚</span>
+        <a class="brand" href="#home" aria-label="PneumoDetect AI home">
+            <span class="brand-icon">✳</span>
             <span>PneumoDetect<span class="accent">AI</span></span>
         </a>
-        <span class="status"><span class="dot"></span> AI Model Ready</span>
+
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="#home">Home</a>
+            <a href="#analyze">AI Analysis</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+        </nav>
+
+        <a class="nav-cta" href="#analyze">Try AI Analysis <span>↗</span></a>
     </header>
 
-    <main class="container">
-        <section class="hero">
-            <p class="eyebrow">AI-POWERED MEDICAL IMAGING PROJECT</p>
-            <h1>Chest X-ray <span>Analysis</span></h1>
-            <p class="subtitle">
-                Upload an X-ray image to explore a prediction from your
-                trained deep-learning model.
-            </p>
-        </section>
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-glow hero-glow-left"></div>
+            <div class="hero-glow hero-glow-right"></div>
 
-        <section class="notice">
-            <strong>Educational prototype only</strong>
-            <p>
-                This tool is not a medical device and cannot diagnose or
-                rule out pneumonia. Do not use the result to make treatment
-                decisions. Consult a qualified healthcare professional.
-            </p>
-        </section>
+            <div class="hero-art hero-art-left" aria-hidden="true">
+                <svg viewBox="0 0 400 560" fill="none">
+                    <defs>
+                        <linearGradient id="lungLeft" x1="0" y1="0" x2="1" y2="1">
+                            <stop stop-color="#00f0b5"/>
+                            <stop offset=".45" stop-color="#00b9f5"/>
+                            <stop offset="1" stop-color="#7a38ff"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M192 75 C150 110 82 175 63 270 C45 365 83 465 157 493 C193 506 208 459 205 414 L205 135"
+                          stroke="url(#lungLeft)" stroke-width="4"/>
+                    <path d="M225 75 C267 110 335 175 354 270 C372 365 334 465 260 493 C224 506 209 459 212 414 L212 135"
+                          stroke="#ef54e8" stroke-width="4"/>
+                    <path d="M202 75 L202 430 M213 75 L213 430"
+                          stroke="#e8baff" stroke-width="6"/>
+                    <path d="M200 148 C153 172 112 206 80 256
+                             M200 195 C143 220 100 260 69 313
+                             M200 247 C143 276 105 329 80 376
+                             M200 300 C151 329 123 392 111 435
+                             M215 148 C262 172 303 206 335 256
+                             M215 195 C272 220 315 260 346 313
+                             M215 247 C272 276 310 329 335 376
+                             M215 300 C264 329 292 392 304 435"
+                          stroke="url(#lungLeft)" stroke-width="3" opacity=".8"/>
+                    <path d="M192 95 C137 140 90 225 85 314 C78 387 120 461 174 468
+                             C199 470 193 401 193 335 Z"
+                          fill="#00dbd0" fill-opacity=".09"/>
+                    <path d="M224 95 C279 140 326 225 331 314 C338 387 296 461 242 468
+                             C217 470 223 401 223 335 Z"
+                          fill="#e14cff" fill-opacity=".1"/>
+                    <circle cx="207" cy="78" r="18" fill="#f0a4ff" fill-opacity=".35"/>
+                </svg>
+            </div>
 
-        <section class="workspace">
-            <div class="upload-card">
-                <div class="section-heading">
-                    <span class="step">01</span>
-                    <div>
-                        <h2>Upload X-ray</h2>
-                        <p>Choose a PNG or JPEG image</p>
-                    </div>
+            <div class="hero-art hero-art-right" aria-hidden="true">
+                <svg viewBox="0 0 360 550" fill="none">
+                    <defs>
+                        <linearGradient id="spineGradient" x1="0" y1="0" x2="1" y2="1">
+                            <stop stop-color="#00d9ff"/>
+                            <stop offset=".45" stop-color="#8e4aff"/>
+                            <stop offset="1" stop-color="#ff8d37"/>
+                        </linearGradient>
+                    </defs>
+                    <path d="M182 28 C160 95 198 142 181 200 C158 277 201 342 184 514"
+                          stroke="url(#spineGradient)" stroke-width="19"
+                          stroke-linecap="round" opacity=".7"/>
+                    <path d="M184 70 C107 62 59 100 34 152
+                             M184 115 C109 109 56 150 27 211
+                             M184 160 C110 166 67 210 41 268
+                             M184 205 C117 220 83 260 56 326
+                             M184 250 C125 279 103 321 83 381
+                             M184 295 C140 335 127 377 112 433
+                             M184 70 C261 62 309 100 334 152
+                             M184 115 C259 109 312 150 341 211
+                             M184 160 C258 166 301 210 327 268
+                             M184 205 C251 220 285 260 312 326
+                             M184 250 C243 279 265 321 285 381
+                             M184 295 C228 335 241 377 256 433"
+                          stroke="url(#spineGradient)" stroke-width="8"
+                          stroke-linecap="round" opacity=".7"/>
+                    <path d="M184 70 C107 62 59 100 34 152
+                             M184 115 C109 109 56 150 27 211
+                             M184 160 C110 166 67 210 41 268
+                             M184 70 C261 62 309 100 334 152
+                             M184 115 C259 109 312 150 341 211
+                             M184 160 C258 166 301 210 327 268"
+                          stroke="#00d9ff" stroke-width="2" opacity=".8"/>
+                </svg>
+            </div>
+
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="live-dot"></span>
+                    INTELLIGENT MEDICAL IMAGING
                 </div>
 
-                <label class="dropzone" for="xrayInput" id="dropzone">
-                    <span class="upload-icon">↑</span>
-                    <strong>Choose an X-ray image</strong>
-                    <span>Click here to browse your files</span>
-                    <span class="file-types">PNG · JPG · JPEG</span>
-                </label>
+                <h1>
+                    The Future of<br>
+                    <span class="gradient-text">X-ray Analysis</span><br>
+                    Starts Here.
+                </h1>
 
-                <input
-                    id="xrayInput"
-                    type="file"
-                    accept=".png,.jpg,.jpeg,image/png,image/jpeg"
-                    hidden
-                >
+                <p class="hero-description">
+                    Explore AI-powered chest X-ray classification with
+                    a deep-learning model built to identify patterns
+                    associated with pneumonia.
+                </p>
 
-                <div class="preview-wrap" id="previewWrap" hidden>
-                    <img id="preview" alt="Selected chest X-ray preview">
-                    <button class="text-button" id="removeImage" type="button">
-                        Remove image
-                    </button>
+                <div class="hero-actions">
+                    <a href="#analyze" class="primary-button">
+                        Analyze X-ray <span>↗</span>
+                    </a>
+                    <a href="#how-it-works" class="secondary-button">
+                        Explore Technology <span>→</span>
+                    </a>
                 </div>
 
-                <button class="analyze-button" id="analyzeButton" disabled>
-                    Analyze X-ray <span>→</span>
-                </button>
-
-                <p class="privacy-note">
-                    Select only images you are authorized to use.
+                <p class="hero-caption">
+                    EDUCATIONAL AI PROTOTYPE <span>✦</span> NOT FOR CLINICAL USE
                 </p>
             </div>
 
-            <div class="result-card">
-                <div class="section-heading">
-                    <span class="step">02</span>
-                    <div>
-                        <h2>Analysis result</h2>
-                        <p>Model output</p>
-                    </div>
-                </div>
-
-                <div class="empty-state" id="emptyState">
-                    <div class="scan-icon">⌕</div>
-                    <h3>Awaiting image</h3>
-                    <p>Your model prediction will appear here.</p>
-                </div>
-
-                <div id="loadingState" class="empty-state" hidden>
-                    <div class="spinner"></div>
-                    <h3>Analyzing image...</h3>
-                    <p>Please wait while the model processes the X-ray.</p>
-                </div>
-
-                <div id="resultState" hidden>
-                    <p class="result-label">PREDICTED CLASS</p>
-                    <h3 id="prediction" class="prediction">—</h3>
-
-                    <div class="confidence-row">
-                        <span>Selected-class score</span>
-                        <strong id="confidence">—</strong>
-                    </div>
-                    <div class="progress-track">
-                        <div class="progress-bar" id="confidenceBar"></div>
-                    </div>
-
-                    <div class="score-grid">
-                        <div class="score-box">
-                            <span>NORMAL score</span>
-                            <strong id="normalScore">—</strong>
-                        </div>
-                        <div class="score-box">
-                            <span>PNEUMONIA score</span>
-                            <strong id="pneumoniaScore">—</strong>
-                        </div>
-                    </div>
-
-                    <p class="result-disclaimer">
-                        Scores reflect model output and are not calibrated
-                        clinical probabilities. This result is not a diagnosis.
-                    </p>
-                </div>
-
-                <p class="error-message" id="errorMessage" role="alert" hidden></p>
+            <div class="hero-bottom">
+                <span>01 / AI-POWERED ANALYSIS</span>
+                <span>DEEP LEARNING <span class="sparkle">✳</span> MEDICAL IMAGING</span>
+                <a href="#analyze">SCROLL TO EXPLORE ↓</a>
             </div>
         </section>
 
-        <section class="how-it-works">
-            <h2>How it works</h2>
+        <section class="analysis-section" id="analyze">
+            <div class="section-intro">
+                <p class="eyebrow">01 / THE EXPERIENCE</p>
+                <h2>Discover what <span>AI can see.</span></h2>
+                <p>
+                    Upload a chest X-ray and explore the output
+                    of our trained convolutional neural network.
+                </p>
+            </div>
+
+            <div class="workspace">
+                <div class="upload-card">
+                    <div class="section-heading">
+                        <span class="step">01</span>
+                        <div>
+                            <h3>Upload your scan</h3>
+                            <p>Start with a chest X-ray image</p>
+                        </div>
+                    </div>
+
+                    <label class="dropzone" for="xrayInput" id="dropzone">
+                        <span class="upload-icon">↑</span>
+                        <strong>Drop your X-ray here</strong>
+                        <span>or click to browse your files</span>
+                        <span class="file-types">PNG · JPG · JPEG · MAX 10 MB</span>
+                    </label>
+
+                    <input
+                        id="xrayInput"
+                        type="file"
+                        accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+                        hidden
+                    >
+
+                    <div class="preview-wrap" id="previewWrap" hidden>
+                        <div class="preview-header">
+                            <span><span class="live-dot"></span> IMAGE LOADED</span>
+                            <button class="text-button" id="removeImage" type="button">
+                                Remove ✕
+                            </button>
+                        </div>
+                        <img id="preview" alt="Selected chest X-ray preview">
+                    </div>
+
+                    <button class="analyze-button" id="analyzeButton" type="button" disabled>
+                        Run AI Analysis <span>↗</span>
+                    </button>
+
+                    <p class="privacy-note">
+                        Only upload images you have permission to use.
+                    </p>
+                </div>
+
+                <div class="result-card">
+                    <div class="section-heading">
+                        <span class="step">02</span>
+                        <div>
+                            <h3>Intelligence report</h3>
+                            <p>AI classification output</p>
+                        </div>
+                    </div>
+
+                    <div class="empty-state" id="emptyState">
+                        <div class="scan-icon">◎</div>
+                        <h3>Ready when you are.</h3>
+                        <p>Upload a chest X-ray to view your model's analysis.</p>
+                        <span class="waiting-tag">AWAITING SCAN</span>
+                    </div>
+
+                    <div class="empty-state" id="loadingState" hidden>
+                        <div class="spinner"></div>
+                        <h3>Analyzing your scan...</h3>
+                        <p>The AI model is processing your X-ray.</p>
+                    </div>
+
+                    <div id="resultState" aria-live="polite" hidden>
+                        <p class="result-label">MODEL CLASSIFICATION</p>
+                        <h3 id="prediction" class="prediction">—</h3>
+
+                        <div class="confidence-row">
+                            <span>Selected-class model score</span>
+                            <strong id="confidence">—</strong>
+                        </div>
+
+                        <div class="progress-track">
+                            <div class="progress-bar" id="confidenceBar"></div>
+                        </div>
+
+                        <div class="score-grid">
+                            <div class="score-box">
+                                <span>NORMAL SCORE</span>
+                                <strong id="normalScore">—</strong>
+                            </div>
+                            <div class="score-box">
+                                <span>PNEUMONIA SCORE</span>
+                                <strong id="pneumoniaScore">—</strong>
+                            </div>
+                        </div>
+
+                        <p class="result-disclaimer">
+                            These are uncalibrated model scores, not clinical
+                            probabilities. This output cannot diagnose or
+                            exclude pneumonia.
+                        </p>
+                    </div>
+
+                    <p class="error-message" id="errorMessage" role="alert" hidden></p>
+                </div>
+            </div>
+
+            <div class="notice" id="about">
+                <span class="notice-icon">!</span>
+                <div>
+                    <strong>Important medical disclaimer</strong>
+                    <p>
+                        PneumoDetect-AI is an educational student project,
+                        not a medical device. Its predictions may be incorrect.
+                        Do not use this tool to make healthcare or treatment
+                        decisions. Consult a qualified healthcare professional.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="how-it-works" id="how-it-works">
+            <div class="section-intro">
+                <p class="eyebrow">02 / BEHIND THE TECHNOLOGY</p>
+                <h2>Three steps. <span>One intelligent workflow.</span></h2>
+                <p>From image upload to AI classification.</p>
+            </div>
+
             <div class="steps">
-                <div><span>1</span><strong>Upload</strong><p>Select an X-ray.</p></div>
-                <div><span>2</span><strong>Process</strong><p>Convert to grayscale and resize to 160 × 160.</p></div>
-                <div><span>3</span><strong>Predict</strong><p>Run inference using your trained CNN.</p></div>
+                <div class="step-card">
+                    <span class="step-number">01 / INPUT</span>
+                    <div class="step-symbol">↥</div>
+                    <h3>Upload</h3>
+                    <p>Choose a chest X-ray image in PNG or JPEG format.</p>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">02 / PROCESS</span>
+                    <div class="step-symbol">◈</div>
+                    <h3>Preprocess</h3>
+                    <p>Convert the image to grayscale and resize it to 160 × 160.</p>
+                </div>
+
+                <div class="step-card">
+                    <span class="step-number">03 / OUTPUT</span>
+                    <div class="step-symbol">✳</div>
+                    <h3>Predict</h3>
+                    <p>Run the trained CNN and display its classification scores.</p>
+                </div>
             </div>
         </section>
 
         <footer>
-            <p>PneumoDetect-AI · Student project · Not for clinical use</p>
+            <a class="brand" href="#home">
+                <span class="brand-icon">✳</span>
+                <span>PneumoDetect<span class="accent">AI</span></span>
+            </a>
+            <p>Built to explore the intersection of AI and medical imaging.</p>
+            <span>STUDENT PROJECT · NOT FOR CLINICAL USE</span>
         </footer>
     </main>
 
@@ -155,41 +316,10 @@
         const resultState = document.getElementById("resultState");
         const errorMessage = document.getElementById("errorMessage");
 
+        const MAX_FILE_SIZE = 10 * 1024 * 1024;
         let previewUrl = null;
-
-        input.addEventListener("change", () => {
-            resetResult();
-
-            const file = input.files[0];
-            if (!file) return;
-
-            const allowed = ["image/jpeg", "image/png"];
-            if (!allowed.includes(file.type)) {
-                showError("Please select a PNG or JPEG image.");
-                input.value = "";
-                analyzeButton.disabled = true;
-                return;
-            }
-
-            if (previewUrl) URL.revokeObjectURL(previewUrl);
-            previewUrl = URL.createObjectURL(file);
-            preview.src = previewUrl;
-
-            previewWrap.hidden = false;
-            dropzone.hidden = true;
-            analyzeButton.disabled = false;
-        });
-
-        document.getElementById("removeImage").addEventListener("click", () => {
-            input.value = "";
-            if (previewUrl) URL.revokeObjectURL(previewUrl);
-            previewUrl = null;
-            preview.removeAttribute("src");
-            previewWrap.hidden = true;
-            dropzone.hidden = false;
-            analyzeButton.disabled = true;
-            resetResult();
-        });
+        let selectedFile = null;
+        let analyzing = false;
 
         function resetResult() {
             resultState.hidden = true;
@@ -204,17 +334,92 @@
             errorMessage.hidden = false;
         }
 
-        analyzeButton.addEventListener("click", async () => {
-            const file = input.files[0];
-            if (!file) return;
+        function clearImage() {
+            selectedFile = null;
+            input.value = "";
+
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+                previewUrl = null;
+            }
+
+            preview.removeAttribute("src");
+            previewWrap.hidden = true;
+            dropzone.hidden = false;
+            analyzeButton.disabled = true;
+            resetResult();
+        }
+
+        function selectImage(file) {
+            if (analyzing) return;
 
             resetResult();
+
+            if (!file) return;
+
+            const allowed = ["image/jpeg", "image/png"];
+
+            if (!allowed.includes(file.type)) {
+                clearImage();
+                showError("Please select a PNG or JPEG image.");
+                return;
+            }
+
+            if (file.size > MAX_FILE_SIZE) {
+                clearImage();
+                showError("Image size must be less than 10 MB.");
+                return;
+            }
+
+            if (previewUrl) URL.revokeObjectURL(previewUrl);
+
+            selectedFile = file;
+            previewUrl = URL.createObjectURL(file);
+            preview.src = previewUrl;
+
+            previewWrap.hidden = false;
+            dropzone.hidden = true;
+            analyzeButton.disabled = false;
+        }
+
+        input.addEventListener("change", () => {
+            selectImage(input.files[0]);
+        });
+
+        document.getElementById("removeImage").addEventListener("click", clearImage);
+
+        ["dragenter", "dragover"].forEach(eventName => {
+            dropzone.addEventListener(eventName, event => {
+                event.preventDefault();
+                dropzone.classList.add("drag-active");
+            });
+        });
+
+        ["dragleave", "drop"].forEach(eventName => {
+            dropzone.addEventListener(eventName, event => {
+                event.preventDefault();
+                dropzone.classList.remove("drag-active");
+            });
+        });
+
+        dropzone.addEventListener("drop", event => {
+            if (analyzing) return;
+            const file = event.dataTransfer.files[0];
+            selectImage(file);
+        });
+
+        analyzeButton.addEventListener("click", async () => {
+            if (!selectedFile || analyzing) return;
+
+            analyzing = true;
+            resetResult();
+
             emptyState.hidden = true;
             loadingState.hidden = false;
             analyzeButton.disabled = true;
 
             const formData = new FormData();
-            formData.append("xray", file);
+            formData.append("xray", selectedFile);
 
             try {
                 const response = await fetch("/predict", {
@@ -223,36 +428,87 @@
                 });
 
                 const data = await response.json();
-                loadingState.hidden = true;
 
                 if (!response.ok) {
                     showError(data.error || "Could not analyze the image.");
                     return;
                 }
 
-                document.getElementById("prediction").textContent = data.prediction;
+                document.getElementById("prediction").textContent =
+                    data.prediction;
+
                 document.getElementById("confidence").textContent =
-                    `${data.confidence.toFixed(2)}%`;
+                    `${Number(data.confidence).toFixed(2)}%`;
+
                 document.getElementById("normalScore").textContent =
-                    `${data.normal_score.toFixed(2)}%`;
+                    `${Number(data.normal_score).toFixed(2)}%`;
+
                 document.getElementById("pneumoniaScore").textContent =
-                    `${data.pneumonia_score.toFixed(2)}%`;
+                    `${Number(data.pneumonia_score).toFixed(2)}%`;
 
                 document.getElementById("confidenceBar").style.width =
                     `${Math.max(0, Math.min(100, data.confidence))}%`;
 
-                const predictionElement = document.getElementById("prediction");
+                const predictionElement =
+                    document.getElementById("prediction");
+
                 predictionElement.className = "prediction " +
-                    (data.prediction === "PNEUMONIA" ? "positive" : "normal");
+                    (data.prediction === "PNEUMONIA"
+                        ? "positive"
+                        : "normal");
 
                 resultState.hidden = false;
+
             } catch (error) {
-                loadingState.hidden = true;
-                showError("Cannot connect to the Flask server. Check the terminal.");
+                showError(
+                    "Unable to complete the analysis. Check the Flask server and try again."
+                );
             } finally {
-                analyzeButton.disabled = !input.files.length;
+                loadingState.hidden = true;
+                analyzing = false;
+                analyzeButton.disabled = !selectedFile;
             }
         });
+
+        window.addEventListener("beforeunload", () => {
+            if (previewUrl) URL.revokeObjectURL(previewUrl);
+        });
+
+
+        // Full-page reveal: original upload and prediction logic is unchanged.
+        function initPageAnimations() {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            const selectors = [
+                ['.analysis-section .section-intro', 'slide-up'],
+                ['.upload-card', 'slide-left'],
+                ['.result-card', 'slide-right'],
+                ['.notice', 'slide-up'],
+                ['.how-it-works .section-intro', 'slide-up'],
+                ['.step-card', 'slide-up'],
+                ['footer', 'slide-up']
+            ];
+            const elements = [];
+            selectors.forEach(([selector, direction]) => {
+                document.querySelectorAll(selector).forEach(element => {
+                    element.classList.add('scroll-reveal', direction);
+                    elements.push(element);
+                });
+            });
+            if (!('IntersectionObserver' in window)) {
+                elements.forEach(element => element.classList.add('is-visible'));
+                return;
+            }
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+            elements.forEach(element => observer.observe(element));
+        }
+        initPageAnimations();
     </script>
 </body>
 </html>

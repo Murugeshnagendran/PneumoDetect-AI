@@ -1,47 +1,59 @@
 
 from pathlib import Path
-import os
+import threading
 
 import numpy as np
-import tensorflow as tf
 from flask import Flask, jsonify, render_template, request
 from PIL import Image, ImageOps, UnidentifiedImageError
 from werkzeug.exceptions import RequestEntityTooLarge
-
-# Reduce TensorFlow logging
-os.environ.setdefault("TF_CPP_MIN_LOG_LEVEL", "2")
+from ai_edge_litert.interpreter import Interpreter
 
 app = Flask(__name__)
 
-# Maximum upload size: 10 MB
+# Maximum image upload size: 10 MB
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH = BASE_DIR / "model" / "pneumonia_model.keras"
+MODEL_PATH = BASE_DIR / "model" / "pneumonia_model.tflite"
 
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg"}
 
-# Load trained model once
-model = tf.keras.models.load_model(MODEL_PATH)
+# Load lightweight model once
+interpreter = Interpreter(
+    model_path=str(MODEL_PATH),
+    num_threads=1
+)
+interpreter.allocate_tensors()
+
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+
+# Prevent simultaneous access to the interpreter
+prediction_lock = threading.Lock()
 
 
 def allowed_file(filename):
     return (
         "." in filename
-        and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
+        and filename.rsplit(".", 1)[1].lower()
+        in ALLOWED_EXTENSIONS
     )
 
 
 def preprocess_image(image):
     image = ImageOps.exif_transpose(image)
     image = image.convert("L")
-    image = image.resize((160, 160), Image.Resampling.LANCZOS)
+    image = image.resize(
+        (160, 160),
+        Image.Resampling.LANCZOS
+    )
 
     array = np.asarray(image, dtype=np.float32)
+
     array = np.expand_dims(array, axis=-1)
     array = np.expand_dims(array, axis=0)
 
-    # Model normalizes pixels internally
+    # The model normalizes pixels internally
     return array
 
 
@@ -53,8 +65,8 @@ def home():
 @app.route("/health")
 def health():
     return jsonify({
-        "status": "ok",
-        "application": "PneumoDetect-AI"
+        "application": "PneumoDetect-AI",
+        "status": "ok"
     })
 
 
@@ -67,6 +79,7 @@ def file_too_large(error):
 
 @app.route("/predict", methods=["POST"])
 def predict():
+
     if "xray" not in request.files:
         return jsonify({
             "error": "Please select an X-ray image."
@@ -85,15 +98,21 @@ def predict():
         }), 400
 
     try:
-        image = Image.open(file.stream)
-        image.load()
+        with Image.open(file.stream) as image:
+            image.load()
+            input_array = preprocess_image(image)
 
-        input_array = preprocess_image(image)
+        with prediction_lock:
+            interpreter.set_tensor(
+                input_details[0]["index"],
+                input_array
+            )
 
-        raw_prediction = model.predict(
-            input_array,
-            verbose=0
-        )
+            interpreter.invoke()
+
+            raw_prediction = interpreter.get_tensor(
+                output_details[0]["index"]
+            )
 
         pneumonia_score = float(
             np.asarray(raw_prediction).reshape(-1)[0]
@@ -113,9 +132,11 @@ def predict():
         return jsonify({
             "prediction": label,
             "confidence": round(confidence * 100, 2),
-            "pneumonia_score": round(pneumonia_score * 100, 2),
+            "pneumonia_score": round(
+                pneumonia_score * 100, 2
+            ),
             "normal_score": round(
-                (1 - pneumonia_score) * 100, 2
+                (1.0 - pneumonia_score) * 100, 2
             )
         })
 
@@ -138,10 +159,8 @@ def predict():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-
     app.run(
         host="0.0.0.0",
-        port=port,
+        port=5000,
         debug=False
     )
