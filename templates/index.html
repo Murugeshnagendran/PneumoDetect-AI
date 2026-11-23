@@ -1,0 +1,258 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PneumoDetect-AI | Chest X-ray Analysis</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header class="navbar">
+        <a class="brand" href="/">
+            <span class="brand-icon">✚</span>
+            <span>PneumoDetect<span class="accent">AI</span></span>
+        </a>
+        <span class="status"><span class="dot"></span> AI Model Ready</span>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <p class="eyebrow">AI-POWERED MEDICAL IMAGING PROJECT</p>
+            <h1>Chest X-ray <span>Analysis</span></h1>
+            <p class="subtitle">
+                Upload an X-ray image to explore a prediction from your
+                trained deep-learning model.
+            </p>
+        </section>
+
+        <section class="notice">
+            <strong>Educational prototype only</strong>
+            <p>
+                This tool is not a medical device and cannot diagnose or
+                rule out pneumonia. Do not use the result to make treatment
+                decisions. Consult a qualified healthcare professional.
+            </p>
+        </section>
+
+        <section class="workspace">
+            <div class="upload-card">
+                <div class="section-heading">
+                    <span class="step">01</span>
+                    <div>
+                        <h2>Upload X-ray</h2>
+                        <p>Choose a PNG or JPEG image</p>
+                    </div>
+                </div>
+
+                <label class="dropzone" for="xrayInput" id="dropzone">
+                    <span class="upload-icon">↑</span>
+                    <strong>Choose an X-ray image</strong>
+                    <span>Click here to browse your files</span>
+                    <span class="file-types">PNG · JPG · JPEG</span>
+                </label>
+
+                <input
+                    id="xrayInput"
+                    type="file"
+                    accept=".png,.jpg,.jpeg,image/png,image/jpeg"
+                    hidden
+                >
+
+                <div class="preview-wrap" id="previewWrap" hidden>
+                    <img id="preview" alt="Selected chest X-ray preview">
+                    <button class="text-button" id="removeImage" type="button">
+                        Remove image
+                    </button>
+                </div>
+
+                <button class="analyze-button" id="analyzeButton" disabled>
+                    Analyze X-ray <span>→</span>
+                </button>
+
+                <p class="privacy-note">
+                    Select only images you are authorized to use.
+                </p>
+            </div>
+
+            <div class="result-card">
+                <div class="section-heading">
+                    <span class="step">02</span>
+                    <div>
+                        <h2>Analysis result</h2>
+                        <p>Model output</p>
+                    </div>
+                </div>
+
+                <div class="empty-state" id="emptyState">
+                    <div class="scan-icon">⌕</div>
+                    <h3>Awaiting image</h3>
+                    <p>Your model prediction will appear here.</p>
+                </div>
+
+                <div id="loadingState" class="empty-state" hidden>
+                    <div class="spinner"></div>
+                    <h3>Analyzing image...</h3>
+                    <p>Please wait while the model processes the X-ray.</p>
+                </div>
+
+                <div id="resultState" hidden>
+                    <p class="result-label">PREDICTED CLASS</p>
+                    <h3 id="prediction" class="prediction">—</h3>
+
+                    <div class="confidence-row">
+                        <span>Selected-class score</span>
+                        <strong id="confidence">—</strong>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-bar" id="confidenceBar"></div>
+                    </div>
+
+                    <div class="score-grid">
+                        <div class="score-box">
+                            <span>NORMAL score</span>
+                            <strong id="normalScore">—</strong>
+                        </div>
+                        <div class="score-box">
+                            <span>PNEUMONIA score</span>
+                            <strong id="pneumoniaScore">—</strong>
+                        </div>
+                    </div>
+
+                    <p class="result-disclaimer">
+                        Scores reflect model output and are not calibrated
+                        clinical probabilities. This result is not a diagnosis.
+                    </p>
+                </div>
+
+                <p class="error-message" id="errorMessage" role="alert" hidden></p>
+            </div>
+        </section>
+
+        <section class="how-it-works">
+            <h2>How it works</h2>
+            <div class="steps">
+                <div><span>1</span><strong>Upload</strong><p>Select an X-ray.</p></div>
+                <div><span>2</span><strong>Process</strong><p>Convert to grayscale and resize to 160 × 160.</p></div>
+                <div><span>3</span><strong>Predict</strong><p>Run inference using your trained CNN.</p></div>
+            </div>
+        </section>
+
+        <footer>
+            <p>PneumoDetect-AI · Student project · Not for clinical use</p>
+        </footer>
+    </main>
+
+    <script>
+        const input = document.getElementById("xrayInput");
+        const dropzone = document.getElementById("dropzone");
+        const preview = document.getElementById("preview");
+        const previewWrap = document.getElementById("previewWrap");
+        const analyzeButton = document.getElementById("analyzeButton");
+
+        const emptyState = document.getElementById("emptyState");
+        const loadingState = document.getElementById("loadingState");
+        const resultState = document.getElementById("resultState");
+        const errorMessage = document.getElementById("errorMessage");
+
+        let previewUrl = null;
+
+        input.addEventListener("change", () => {
+            resetResult();
+
+            const file = input.files[0];
+            if (!file) return;
+
+            const allowed = ["image/jpeg", "image/png"];
+            if (!allowed.includes(file.type)) {
+                showError("Please select a PNG or JPEG image.");
+                input.value = "";
+                analyzeButton.disabled = true;
+                return;
+            }
+
+            if (previewUrl) URL.revokeObjectURL(previewUrl);
+            previewUrl = URL.createObjectURL(file);
+            preview.src = previewUrl;
+
+            previewWrap.hidden = false;
+            dropzone.hidden = true;
+            analyzeButton.disabled = false;
+        });
+
+        document.getElementById("removeImage").addEventListener("click", () => {
+            input.value = "";
+            if (previewUrl) URL.revokeObjectURL(previewUrl);
+            previewUrl = null;
+            preview.removeAttribute("src");
+            previewWrap.hidden = true;
+            dropzone.hidden = false;
+            analyzeButton.disabled = true;
+            resetResult();
+        });
+
+        function resetResult() {
+            resultState.hidden = true;
+            loadingState.hidden = true;
+            emptyState.hidden = false;
+            errorMessage.hidden = true;
+            errorMessage.textContent = "";
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.hidden = false;
+        }
+
+        analyzeButton.addEventListener("click", async () => {
+            const file = input.files[0];
+            if (!file) return;
+
+            resetResult();
+            emptyState.hidden = true;
+            loadingState.hidden = false;
+            analyzeButton.disabled = true;
+
+            const formData = new FormData();
+            formData.append("xray", file);
+
+            try {
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const data = await response.json();
+                loadingState.hidden = true;
+
+                if (!response.ok) {
+                    showError(data.error || "Could not analyze the image.");
+                    return;
+                }
+
+                document.getElementById("prediction").textContent = data.prediction;
+                document.getElementById("confidence").textContent =
+                    `${data.confidence.toFixed(2)}%`;
+                document.getElementById("normalScore").textContent =
+                    `${data.normal_score.toFixed(2)}%`;
+                document.getElementById("pneumoniaScore").textContent =
+                    `${data.pneumonia_score.toFixed(2)}%`;
+
+                document.getElementById("confidenceBar").style.width =
+                    `${Math.max(0, Math.min(100, data.confidence))}%`;
+
+                const predictionElement = document.getElementById("prediction");
+                predictionElement.className = "prediction " +
+                    (data.prediction === "PNEUMONIA" ? "positive" : "normal");
+
+                resultState.hidden = false;
+            } catch (error) {
+                loadingState.hidden = true;
+                showError("Cannot connect to the Flask server. Check the terminal.");
+            } finally {
+                analyzeButton.disabled = !input.files.length;
+            }
+        });
+    </script>
+</body>
+</html>
